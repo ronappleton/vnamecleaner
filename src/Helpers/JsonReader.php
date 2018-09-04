@@ -20,6 +20,12 @@ class JsonReader
         'h264', 'h265',
     ];
 
+    public function readJson($json_object, $limit)
+    {
+        $this->data = $json_object;
+        $this->makeObjects($limit);
+    }
+
     public function read($filepath, $filename, $limit = null)
     {
         if (empty($filepath)) {
