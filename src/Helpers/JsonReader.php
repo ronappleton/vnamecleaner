@@ -24,6 +24,7 @@ class JsonReader
     {
         $this->data = $json_object;
         $this->makeObjects($limit);
+        return $this;
     }
 
     public function read($filepath, $filename, $limit = null)
@@ -63,7 +64,7 @@ class JsonReader
                         if (!empty($limit)) {
                             if (count($this->video_objects) == $limit) {
                                 $this->clearData();
-                                return $this->video_objects;
+                                return $this;
                             }
                         }
                     }
@@ -71,7 +72,7 @@ class JsonReader
             }
         }
         $this->clearData();
-        return $this->video_objects;
+        return $this;
         // Bare in mind if these are iterated over it should become a generator..
     }
 
@@ -92,6 +93,8 @@ class JsonReader
             $this->washVideoName($video);
             $this->makeTags($video);
         }
+
+        return $this;
     }
 
     public function getVideos()
