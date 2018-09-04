@@ -8,9 +8,7 @@
             "email": "ron.appleton@gmail.com"
         }
     ],
-    "require": {
-        "ronappleton/webcrawler": "dev-master"
-    },
+    "require": {},
     "autoload": {
         "psr-4": {
             "RonAppleton\\VNameCleaner\\": "src/"
