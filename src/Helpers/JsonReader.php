@@ -94,7 +94,7 @@ class JsonReader
         }
     }
 
-    public function getVideo()
+    public function getVideos()
     {
         foreach ($this->video_objects as $video_object) {
             yield $video_object;
