@@ -1,6 +1,6 @@
 {
     "name": "ronappleton/vnamecleaner",
-    "description": "Package for cleaning up video names.",
+    "description": "Package for cleaning up video names from webcrawler file objects.",
     "license": "MIT",
     "authors": [
         {
