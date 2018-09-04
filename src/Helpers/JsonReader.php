@@ -94,6 +94,13 @@ class JsonReader
         }
     }
 
+    public function getVideo()
+    {
+        foreach ($this->video_objects as $video_object) {
+            yield $video_object;
+        }
+    }
+
     private function removeExtension($original_name) {
         $video_name_parts = explode('.', $original_name);
         if ($video_name_parts > 1) {
