@@ -1,0 +1,19 @@
+{
+    "name": "ronappleton/vnamecleaner",
+    "description": "Package for cleaning up video names.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ron Appleton",
+            "email": "ron.appleton@gmail.com"
+        }
+    ],
+    "require": {
+        "ronappleton/webcrawler": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "RonAppleton\\VNameCleaner\\": "src/"
+        }
+    }
+}
