@@ -22,7 +22,7 @@ class JsonReader
 
     public function readJson($json_object, $limit = null)
     {
-        $this->data = json_decode($json_object);
+        $this->data = $json_object;
         $this->makeObjects($limit);
         return $this;
     }
