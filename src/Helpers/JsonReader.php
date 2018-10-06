@@ -102,14 +102,16 @@ class JsonReader
                 $this->makeTags($video);
             }
         }
-        
+
         return $this;
     }
 
     public function getVideos()
     {
-        foreach ($this->video_objects as $video_object) {
-            yield $video_object;
+        if (!empty($this->video_objects) && is_array($this->video_objects)) {
+            foreach ($this->video_objects as $video_object) {
+                yield $video_object;
+            }
         }
     }
 
