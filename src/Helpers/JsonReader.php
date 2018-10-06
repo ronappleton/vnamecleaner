@@ -22,7 +22,7 @@ class JsonReader
 
     public function readJson($json_object, $limit = null)
     {
-        $this->data = $json_object;
+        $this->data = json_decode($json_object);
         $this->makeObjects($limit);
         return $this;
     }
@@ -63,6 +63,7 @@ class JsonReader
                         $this->video_objects[] = $vObject;
                         if (!empty($limit)) {
                             if (count($this->video_objects) == $limit) {
+                                $this->processVideos();
                                 $this->clearData();
                                 return $this;
                             }
@@ -71,6 +72,7 @@ class JsonReader
                 }
             }
         }
+        $this->processVideos();
         $this->clearData();
         return $this;
         // Bare in mind if these are iterated over it should become a generator..
