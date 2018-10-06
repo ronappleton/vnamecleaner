@@ -236,7 +236,7 @@ class JsonReader
                 }
             }
         }
-        print_r($video_name_parts);
+
         $video->clean_name = implode(' ', $video_name_parts);
     }
 
