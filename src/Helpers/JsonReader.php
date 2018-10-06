@@ -22,10 +22,10 @@ class JsonReader
 
     public function readJson($json_object, $limit = null)
     {
-        if ($json_object instanceof \stdClass) {
-            $this->data = $json_object;
-        } else {
+        if (is_string($json_object)) {
             $this->data = json_encode($json_object);
+        } else {
+            $this->data = $json_object;
         }
 
         $this->makeObjects($limit);
