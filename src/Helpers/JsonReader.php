@@ -90,17 +90,19 @@ class JsonReader
 
     public function processVideos()
     {
-        foreach ($this->video_objects as &$video) {
-            $video->clean_name = urldecode($this->removeExtension($video->original_name));
-            $this->findSeries($video);
-            $this->findResolution($video);
-            $this->findVideoQualities($video);
-            $this->findVideoEncodings($video);
-            $this->findVideoYear($video);
-            $this->washVideoName($video);
-            $this->makeTags($video);
+        if (!empty($this->video_objects) && is_array($this->video_objects)) {
+            foreach ($this->video_objects as &$video) {
+                $video->clean_name = urldecode($this->removeExtension($video->original_name));
+                $this->findSeries($video);
+                $this->findResolution($video);
+                $this->findVideoQualities($video);
+                $this->findVideoEncodings($video);
+                $this->findVideoYear($video);
+                $this->washVideoName($video);
+                $this->makeTags($video);
+            }
         }
-
+        
         return $this;
     }
 
