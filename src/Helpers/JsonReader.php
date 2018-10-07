@@ -70,17 +70,15 @@ class JsonReader
     public function makeObjects($limit = null)
     {
         foreach ($this->page->getFiles() as $file) {
-            if (!empty($file->remote_file_name) && !(empty($file->remote_file_path))) {
-                $vObject = new VideoObject();
-                $vObject->original_name = $file->remote_file_name;
-                $vObject->file_location = $file->remote_file_path;
-                $this->video_objects[] = $vObject;
-                if (!empty($limit)) {
-                    if (count($this->video_objects) == $limit) {
-                        $this->processVideos();
-                        $this->clearData();
-                        return $this;
-                    }
+            $vObject = new VideoObject();
+            $vObject->original_name = $file->getFileName();
+            $vObject->file_location = $file->getWebPath();
+            $this->video_objects[] = $vObject;
+            if (!empty($limit)) {
+                if (count($this->video_objects) == $limit) {
+                    $this->processVideos();
+                    $this->clearData();
+                    return $this;
                 }
             }
         }
