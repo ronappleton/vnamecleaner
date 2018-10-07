@@ -6,29 +6,41 @@ use RonAppleton\VNameCleaner\Objects\VideoObject;
 
 class JsonReader
 {
-    private $data = null;
-    private $data_read = false;
+    private $page = null;
+    private $page_read = false;
     public $video_objects = null;
 
     private $video_qualities = [
-        'hdtv', 'webcam', 'cam', 'hdcam', 'webrip', 'brrip',
-        'dvdrip', '4k', '2k', 'dvcam', 'screener', 'web-dl',
+        'hdtv',
+        'webcam',
+        'cam',
+        'hdcam',
+        'webrip',
+        'brrip',
+        'dvdrip',
+        '4k',
+        '2k',
+        'dvcam',
+        'screener',
+        'web-dl',
     ];
 
     private $video_encodings = [
-        'x264', 'x265', 'divx', 'xvid', 'aac', 'avc',
-        'h264', 'h265',
+        'x264',
+        'x265',
+        'divx',
+        'xvid',
+        'aac',
+        'avc',
+        'h264',
+        'h265',
     ];
 
     public function readJson($json_object, $limit = null)
     {
-        if (is_string($json_object)) {
-            $this->data = json_encode($json_object);
-        } else {
-            $this->data = $json_object;
-        }
-
+        $this->page = $json_object;
         $this->makeObjects($limit);
+
         return $this;
     }
 
@@ -39,8 +51,7 @@ class JsonReader
         } else {
             if ($filepath[strlen($filepath)] !== DIRECTORY_SEPARATOR) {
                 $fullpath = implode(DIRECTORY_SEPARATOR, [$filepath, $filename]);
-            }
-            else {
+            } else {
                 $fullpath = $filepath . $filename;
             }
         }
@@ -58,34 +69,32 @@ class JsonReader
 
     public function makeObjects($limit = null)
     {
-        foreach ($this->data as &$location) {
-            if (!empty($location->files)) {
-                foreach ($location->files as $file) {
-                    if (!empty($file->remote_file_name) && !(empty($file->remote_file_path))) {
-                        $vObject = new VideoObject();
-                        $vObject->original_name = $file->remote_file_name;
-                        $vObject->file_location = $file->remote_file_path;
-                        $this->video_objects[] = $vObject;
-                        if (!empty($limit)) {
-                            if (count($this->video_objects) == $limit) {
-                                $this->processVideos();
-                                $this->clearData();
-                                return $this;
-                            }
-                        }
+        foreach ($this->page->getFiles() as $file) {
+            if (!empty($file->remote_file_name) && !(empty($file->remote_file_path))) {
+                $vObject = new VideoObject();
+                $vObject->original_name = $file->remote_file_name;
+                $vObject->file_location = $file->remote_file_path;
+                $this->video_objects[] = $vObject;
+                if (!empty($limit)) {
+                    if (count($this->video_objects) == $limit) {
+                        $this->processVideos();
+                        $this->clearData();
+                        return $this;
                     }
                 }
             }
         }
+
         $this->processVideos();
         $this->clearData();
         return $this;
         // Bare in mind if these are iterated over it should become a generator..
     }
 
-    private function clearData() {
-        $this->data_read = true;
-        unset($this->data);
+    private function clearData()
+    {
+        $this->page_read = true;
+        unset($this->page);
     }
 
     public function processVideos()
@@ -115,7 +124,8 @@ class JsonReader
         }
     }
 
-    private function removeExtension($original_name) {
+    private function removeExtension($original_name)
+    {
         $video_name_parts = explode('.', $original_name);
         if ($video_name_parts > 1) {
             unset($video_name_parts[count($video_name_parts) - 1]);
@@ -133,8 +143,8 @@ class JsonReader
             foreach ($matches as $match) {
                 // If the year is higher than the year of the first film (1888 - The Roundhay Garden Scene)
                 // we will keep it
-                if ((int) $match[1] > 1888 && (int) $match[1] <= (int) date('Y')) {
-                    $years[] = (int) $match[1];
+                if ((int)$match[1] > 1888 && (int)$match[1] <= (int)date('Y')) {
+                    $years[] = (int)$match[1];
                 }
             }
             if (!empty($years)) {
@@ -147,7 +157,7 @@ class JsonReader
                             $video->year = $year;
                         } else {
                             $max = max($years);
-                            if ($max <= (int) date('Y')) {
+                            if ($max <= (int)date('Y')) {
                                 // Make sure we are not giving the year the resolution
                                 if (!contains($video->resolution, $max)) {
                                     $video->year = $max;
@@ -166,8 +176,8 @@ class JsonReader
         preg_match($re, $video->clean_name, $matches);
         if (!empty($matches) && count($matches) === 3) {
             $video->isSeries = true;
-            $video->series = (int) str_replace('s', '', strtolower($matches[1]));
-            $video->episode = (int) str_replace('e', '', strtolower($matches[2]));
+            $video->series = (int)str_replace('s', '', strtolower($matches[1]));
+            $video->episode = (int)str_replace('e', '', strtolower($matches[2]));
         }
     }
 
@@ -182,8 +192,7 @@ class JsonReader
 
     private function findVideoQualities(&$video)
     {
-        foreach ($this->video_qualities as $quality)
-        {
+        foreach ($this->video_qualities as $quality) {
             if (contains(strtolower($video->clean_name), $quality)) {
                 $video->qualities[] = $quality;
             }
@@ -192,8 +201,7 @@ class JsonReader
 
     private function findVideoEncodings(&$video)
     {
-        foreach ($this->video_encodings as $encoding)
-        {
+        foreach ($this->video_encodings as $encoding) {
             if (contains(strtolower($video->clean_name), $encoding)) {
                 $video->encodings[] = $encoding;
             }
@@ -235,7 +243,7 @@ class JsonReader
                         continue;
                     }
                 }
-                if (contains((string) $video->year, $name_part)) {
+                if (contains((string)$video->year, $name_part)) {
                     unset($video_name_parts[$key]);
                 }
             }
@@ -278,7 +286,7 @@ class JsonReader
             $video->tags[] = $this->buildSeriesString($video, false, true, false);
             $video->tags[] = $this->buildSeriesString($video, true, true, false);
             $video->tags[] = $this->buildSeriesString($video, false, false, true);
-            $video->tags[] = $this->buildSeriesString($video, true,  false, true);
+            $video->tags[] = $this->buildSeriesString($video, true, false, true);
         }
     }
 
@@ -293,7 +301,7 @@ class JsonReader
                 $series = $this->formatForSeries(true, $video->series);
             }
             if ($get_episode) {
-                $episode = $this->formatForSeries(false,$video->episode);
+                $episode = $this->formatForSeries(false, $video->episode);
             }
 
             $output = '';
@@ -310,7 +318,8 @@ class JsonReader
 
     }
 
-    private function formatForSeries($series = true, $number) {
+    private function formatForSeries($series = true, $number)
+    {
         $prefix = $series ? 's' : 'e';
         if ($number > 9) {
             return "{$prefix}{$number}";
@@ -319,7 +328,8 @@ class JsonReader
         }
     }
 
-    public function printVideos() {
+    public function printVideos()
+    {
         foreach ($this->video_objects as $video) {
             print_r($video);
         }
